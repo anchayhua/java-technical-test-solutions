@@ -6,16 +6,16 @@
 package com.quique.api.persist;
 
 import com.quique.api.exception.DBException;
-import com.quique.api.model.Gestionmarcaciones;
-import java.util.List;
+import com.quique.api.model.People;
+import com.quique.api.model.Planet;
 
 /**
  *
  * @author Quique
  */
-public interface technicalMarcacionesDao {
+public interface technicalDao {
 
-    public List<Gestionmarcaciones> listasrMarcacionesSQL() throws DBException;
+    public Long insertPlanet(Planet oPlanet) throws DBException;
 
-    public void insert_marcacion_mysql() throws DBException;
+    public Long insertPeople(People oPeople) throws DBException;
 }

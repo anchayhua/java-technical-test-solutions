@@ -7,11 +7,8 @@ package com.quique.api.persist;
 
 import com.quique.api.dao.BaseDAO;
 import com.quique.api.exception.DBException;
-import com.quique.api.model.Gestionmarcaciones;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
+import com.quique.api.model.People;
+import com.quique.api.model.Planet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,31 +20,28 @@ import org.springframework.stereotype.Repository;
  * @author QUIQUE
  */
 @Repository
-public class technicalPersist implements technicalMarcacionesDao {
+public class technicalPersist implements technicalDao {
 
     Logger logger = LoggerFactory.getLogger(technicalPersist.class);
 
     @Autowired
-    BaseDAO<Integer, Gestionmarcaciones> gestionmarcacionesDAO;
+    BaseDAO<Long, Planet> planetDAO;
 
     @Autowired
-    BaseDAO<Integer, Object> objectDAO;
-
-    @PersistenceContext
-    private EntityManager em;
+    BaseDAO<Long, People> peopleDAO;
 
     @Override
-    public List<Gestionmarcaciones> listasrMarcacionesSQL() throws DBException {
-        logger.info(":::::::::::::::::::::::::: listasrMarcacionesSQL :::::::::::::::::::::::::");
-        return gestionmarcacionesDAO.findByNamedQuery("Gestionmarcaciones.findAll");
+    public Long insertPlanet(Planet oPlanet) throws DBException {
+        logger.info(":::::::::::::::::::::: insertPlanet ::::::::::::::::::::::");
+        planetDAO.insert(oPlanet);
+        return oPlanet.getId();
     }
 
     @Override
-    public void insert_marcacion_mysql() throws DBException {
-        logger.info("::::::::::::::::::::::::: insert_marcacion_mysql :::::::::::::::::::::::::");
-        StoredProcedureQuery query = em.createStoredProcedureQuery("db_intranet_pro.dbo.sp_insert_marcacion_mysql");
-        query.execute();
-
+    public Long insertPeople(People oPeople) throws DBException {
+        logger.info(":::::::::::::::::::::: insertPeople ::::::::::::::::::::::");
+        peopleDAO.insert(oPeople);
+        return oPeople.getId();
     }
 
 }

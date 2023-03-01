@@ -13,14 +13,14 @@ CREATE TABLE planets (
 CREATE TABLE people (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    birth_year TEXT,
-    eye_color TEXT,
+    birthyear TEXT,
+    eyecolor TEXT,
     gender TEXT,
-    hair_color TEXT,
+    haircolor TEXT,
     height TEXT,
     homeworld TEXT,
     mass TEXT,
-    skin_color TEXT,
+    skincolor TEXT,
     created TEXT,
     edited TEXT,
     url TEXT

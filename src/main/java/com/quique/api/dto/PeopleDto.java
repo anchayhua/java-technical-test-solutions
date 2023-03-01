@@ -6,26 +6,36 @@
 package com.quique.api.dto;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author nanchayhua
- */
 public class PeopleDto implements Serializable {
 
     private Long id;
+    @NotNull(message = "Insert name")
     private String name;
+    @NotNull(message = "Insert birthYear")
     private String birthYear;
+    @NotNull(message = "Insert eyeColor")
     private String eyeColor;
+    @NotNull(message = "Insert gender")
     private String gender;
+    @NotNull(message = "Insert hairColor")
     private String hairColor;
+    @NotNull(message = "Insert height")
     private String height;
+    @NotNull(message = "Insert homeworld")
     private String homeworld;
+    @NotNull(message = "Insert mass")
     private String mass;
+    @NotNull(message = "Insert skinColor")
     private String skinColor;
+    @NotNull(message = "Insert created")
     private String created;
     private String edited;
     private String url;
+
+    public PeopleDto() {
+    }
 
     public Long getId() {
         return id;

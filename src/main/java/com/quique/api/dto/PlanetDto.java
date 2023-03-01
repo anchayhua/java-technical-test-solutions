@@ -6,21 +6,26 @@
 package com.quique.api.dto;
 
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
 public class PlanetDto implements Serializable {
 
     private Long id;
+    @NotNull(message = "Insert climate")
     private String climate;
+    @NotNull(message = "Insert diameter")
     private String diameter;
+    @NotNull(message = "Insert gravity")
     private String gravity;
+    @NotNull(message = "Insert name")
     private String name;
+    @NotNull(message = "Insert population")
     private String population;
+    @NotNull(message = "Insert residents")
     private String residents;
+    @NotNull(message = "Insert terrain")
     private String terrain;
     private String url;
-
-    public PlanetDto() {
-    }
 
     public PlanetDto(String climate, String diameter, String gravity, String name, String population, String residents, String terrain, String url) {
         this.climate = climate;
@@ -31,6 +36,9 @@ public class PlanetDto implements Serializable {
         this.residents = residents;
         this.terrain = terrain;
         this.url = url;
+    }
+
+    public PlanetDto() {
     }
 
     public Long getId() {

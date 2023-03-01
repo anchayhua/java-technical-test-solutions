@@ -5,11 +5,11 @@
  */
 package com.quique.api.service;
 
+import com.quique.api.dto.PeopleDto;
+import com.quique.api.dto.PlanetDto;
 import com.quique.api.exception.DBException;
-import com.quique.api.model.Gestionmarcaciones;
-import com.quique.api.util.Constantes;
-import com.quique.api.util.RestResponse;
-import java.util.ArrayList;
+import com.quique.api.model.People;
+import com.quique.api.model.Planet;
 import java.util.List;
 import java.util.logging.Level;
 import org.slf4j.Logger;
@@ -17,7 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
-import com.quique.api.persist.technicalMarcacionesDao;
+import com.quique.api.proxy.SwapiWS;
+import java.util.Collections;
+import java.util.Optional;
+import com.quique.api.persist.technicalDao;
+import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -29,53 +33,101 @@ public class technicalServiceImpl implements technicalService {
     Logger logger = LoggerFactory.getLogger(technicalServiceImpl.class);
 
     @Autowired
-    technicalMarcacionesDao oImportarMarcacionesDao;
+    technicalDao otechnicalDao;
+
+    @Autowired
+    SwapiWS oSwapiWS;
 
     @Override
-    public List<Gestionmarcaciones> listasrMarcacionesSQL() {
+    public List<PlanetDto> getAndSavePlanet(String param) throws Exception {
 
-        logger.info("::::::::::::::::::::: INICIAR listasrMarcacionesSQL ::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::: START getAndSavePlanet ::::::::::::::::::::::");
 
-        List<Gestionmarcaciones> listDto = new ArrayList<>();
-        try {
-            listDto = oImportarMarcacionesDao.listasrMarcacionesSQL();
-            logger.info("Cantidad de datos {}", listDto.size());
+        List<PlanetDto> listDto = oSwapiWS.getPlanets((Optional.ofNullable(param).orElse("")), "");
 
-        } catch (DBException ex) {
-            java.util.logging.Logger.getLogger(technicalServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            logger.error("Error: {}", ex);
-        }
+        Optional.ofNullable(listDto)
+                .orElse(Collections.emptyList())
+                .forEach((PlanetDto oPlanetDto) -> {
 
-        logger.info("::::::::::::::::::::::: FIN listasrMarcacionesSQL :::::::::::::::::::::::::");
+                    try {
+                        Planet oPlanet = new Planet();
+                        BeanUtils.copyProperties(oPlanetDto, oPlanet);
+                        otechnicalDao.insertPlanet(oPlanet);
+
+                    } catch (DBException ex) {
+                        java.util.logging.Logger.getLogger(technicalService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+
+        logger.info("::::::::::::::::::::::: END getAndSavePlanet :::::::::::::::::::::::::");
 
         return listDto;
     }
 
     @Override
-    public RestResponse insert_marcacion_mysql() {
+    public List<PeopleDto> getAndSavePeople(String param) throws Exception {
 
-        logger.info(":::::::::::::::::::: INICIAR insert_marcacion_mysql ::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::: START getAndSavePeople ::::::::::::::::::::::");
 
-        RestResponse response = new RestResponse();
+        List<PeopleDto> listDto = oSwapiWS.getPeoples((Optional.ofNullable(param).orElse("")), "");
+
+        Optional.ofNullable(listDto)
+                .orElse(Collections.emptyList())
+                .forEach((PeopleDto oPeopleDto) -> {
+
+                    try {
+                        People oPeople = new People();
+                        BeanUtils.copyProperties(oPeopleDto, oPeople);
+                        otechnicalDao.insertPeople(oPeople);
+
+                    } catch (DBException ex) {
+                        java.util.logging.Logger.getLogger(technicalService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+
+        logger.info("::::::::::::::::::::::: END getAndSavePeople :::::::::::::::::::::::::");
+
+        return listDto;
+    }
+
+    @Override
+    public PlanetDto savePlanet(PlanetDto oPlanetDto) throws Exception {
+
+        logger.info("::::::::::::::::::::: START savePlanet ::::::::::::::::::::::");
 
         try {
+            Planet oPlanet = new Planet();
+            BeanUtils.copyProperties(oPlanetDto, oPlanet);
 
-            oImportarMarcacionesDao.insert_marcacion_mysql();
-
-            response.setCodigo(Constantes.CODIGO_RPSTA_OK);
-            response.setMensaje(Constantes.RPSTA_OK);
-            logger.info(response.toString());
+            oPlanetDto.setId(otechnicalDao.insertPlanet(oPlanet));
 
         } catch (DBException ex) {
-            java.util.logging.Logger.getLogger(technicalServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            response.setCodigo(Constantes.CODIGO_RPSTA_INTERNAL_SERVER_ERROR);
-            response.setMensaje(Constantes.CODIGO_RPSTA_INTERNAL_SERVER_ERROR);
-            logger.error("Error: {}", ex);
+            java.util.logging.Logger.getLogger(technicalService.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        logger.info(":::::::::::::::::::::: FIN insert_marcacion_mysql ::::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::::: END savePlanet :::::::::::::::::::::::::");
 
-        return response;
+        return oPlanetDto;
+    }
+
+    @Override
+    public PeopleDto savePeople(PeopleDto oPeopleDto) throws Exception {
+
+        logger.info("::::::::::::::::::::: START savePeople ::::::::::::::::::::::");
+
+        try {
+            People oPeople = new People();
+            BeanUtils.copyProperties(oPeopleDto, oPeople);
+
+            oPeopleDto.setId(otechnicalDao.insertPeople(oPeople));
+
+        } catch (DBException ex) {
+            java.util.logging.Logger.getLogger(technicalService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        logger.info("::::::::::::::::::::::: END savePeople :::::::::::::::::::::::::");
+
+        return oPeopleDto;
     }
 
 }
